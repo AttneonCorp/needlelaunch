@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "Cleaning Optional Components:"
+cd HomebrewTarget
+make clean

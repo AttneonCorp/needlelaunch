@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "Building Optional Components... Please wait"
+sleep 1
+cd HomebrewTarget && make
