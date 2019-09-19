@@ -26,4 +26,5 @@ class Rnx
         static void Exit();
         static bool IsUsingReiNX();
         static Result SetHbTidForDelta(u64 tid);
+	static Result SetHbTidForDeltaOnRnx(u64 tid);
 };

@@ -1,6 +1,6 @@
 /*
 * ΔLaunch
-* Copyright (C) 2018  Reisyukaku
+* Copyright (C) 2018  Reisyukaku, AttneonCorp
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -17,25 +17,9 @@
 */
 
 #include "Account.hpp"
-// From applets.c
-static Result _appletCmdNoIO(Service* session, u64 cmd_id);
-//StoreWithImage
-Result accStoreWithImage(AccountProfile* acc, AccountProfileBase* pb, AccountUserData* ud, u8* buf, size_t fsize){
-	// Not yet ready for use
-	#ifdef WIP
-	u64 cmd_id = 101; // From switchbrew
-	Service srv; // A new service
-	Handle handle; // The handle
-	serviceCreate(&srv, handle);
-	Result rc = 0;
-	rc = _appletCmdNoIO(&srv, cmd_id);
-	return rc;
-	#endif
-	// Stub
-	Result rc = 0;
-	return rc;
-};
-
+// From Goldleaf
+#include "AccountCommands.hpp"
+using namespace acc;
 s32 Account::GetUserCount() {
     s32 cnt = 0;
     #ifdef __SWITCH__
@@ -95,36 +79,20 @@ Result Account::SetCustomProfileImage(std::string filename) {
         rc = accountGetProfile(&acc, uid);
         rc = accountProfileGet(&acc, &ud, &pb);
         ud.iconID = 0;
-        rc = accountProfileGet(&acc, &ud, &pb);
-        rc = accStoreWithImage(&acc, &pb, &ud, buf, fsize);
+	ProfileEditor pe = ProfileEditor();
+	ProfileEditor profile_editor;
+	rc = GetProfileEditor(uid, &pe);
+        rc = profile_editor.StoreWithImage(&pb, &ud, buf, fsize);
         accountProfileClose(&acc);
         accountExit();
     }
     return rc;
 }
-// Command 51
-Result accTrySelectUserWithoutInteraction(u128* userID){
-        // Not yet ready for use
-        u64 cmd_id = 51; // From switchbrew
-        Service srv; // A new service
-        Handle handle; // The handle
-        serviceCreate(&srv, handle);
-        Result rc = 0;
-        rc = _appletCmdNoIO(&srv, cmd_id);
-        return rc;
-}
 u128 Account::TryGetUser() {
-    u128 userID;
-    #ifdef __SWITCH__
-    accountInitialize();
-    Result rc = accTrySelectUserWithoutInteraction(&userID);
-    accountExit();
-    if(R_FAILED(rc) || !userID)
-        userID = App::LaunchPSelect();
-    #endif
-    return userID;
+	u128 userID;
+	userID = App::LaunchPSelect();
+	return userID;
 }
-
 SDL_Texture *Account::GetProfileImage(u128 userID) {
     SDL_Texture *tex = NULL;
     #ifdef __SWITCH__
@@ -153,11 +121,8 @@ Result Account::SetProfilePicture(u128 userId, u8 *jpg, size_t jpgSize) {
 	AccountProfileBase pb;
 	AccountUserData accData;
 	rc = accountProfileGet(&prof, &accData, &pb);
-	// On switchbrew?
-	// accountProfileLoadImage maybe?
-	// Custom libnx WIP
-	// Till then, disable it
-	//rc = accStoreWithImage(&prof, &pb, &accData, jpg, jpgSize);
-	#endif
+	ProfileEditor profile_editor;
+	rc = profile_editor.StoreWithImage(&pb, &accData, jpg, jpgSize);
+        #endif
 	return rc;
 }

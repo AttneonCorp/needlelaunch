@@ -29,14 +29,19 @@ u32 App::lastAeCmd;
 u32 App::lastSamsCmd;
 bool App::is_active; // Application one
 bool App::is_active_applet; // Applet one
+AppletApplication App::app;
 /*
 *   Application
 */
 Result App::LaunchGame(u64 tid, u128 userID) {
+	Result rc = -1;
+	rc = App::LaunchGameTrue(tid, userID, App::app);
+	return rc;
+}
+Result App::LaunchGameTrue(u64 tid, u128 userID, AppletApplication app) {
     Result rc = 0;
     #ifdef __SWITCH__
     AppletStorage aStore;
-    AppletApplication app;
     rc = appletCreateApplication(&app, tid);
     if(R_FAILED(rc)) {
         ShowError("Error launching game. The error is shown below:\n", "Error initializing handle", rc);

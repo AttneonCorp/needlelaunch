@@ -31,13 +31,13 @@ Engine::Engine(u32 width, u32 height) {
     //Mount romfs
     #ifdef REINX // ReiNX
     romfsMountFromFsdev("/ReiNX/titles/0100000000001000/romfs.bin", 0, "romfs");
-    Rnx::SetHbTidForDelta(0x010000000000100F);
+    Rnx::SetHbTidForDeltaOnRnx(0x010000000000100F);
     #endif
     #ifndef REINX // Atmosphere
     romfsMountFromFsdev("/atmosphere/titles/0100000000001000/romfs.bin", 0, "romfs");
     #endif
     #ifdef SXOS // SX OS
-    #error SXOS is not yet supported
+    romfsMountFromFsdev("/sx/titles/0100000000001000/romfs.bin", 0, "romfs");
     #endif
 }
 

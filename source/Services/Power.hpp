@@ -27,4 +27,6 @@ class Power
 		static Result Reboot();
         static Result Sleep();
 		static u32 GetBatteryLife();
+	static Result RcmReboot();
+
 };

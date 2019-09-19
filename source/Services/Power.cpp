@@ -18,6 +18,7 @@
 
 #include "Power.hpp"
 #include "Settings.hpp"
+#include "RCMReboot.hpp"
 Result Power::Shutdown() {
     #ifdef __SWITCH__
     appletSetHandlesRequestToDisplay(false);
@@ -33,7 +34,10 @@ Result Power::Reboot() {
     #endif
     return 0;
 }
-
+Result Power::RcmReboot() {
+    RebootToRcm();
+    return 0;
+}
 Result Power::Sleep() {
     #ifdef __SWITCH__
     u8 flag;
@@ -47,7 +51,7 @@ u32 Power::GetBatteryLife() {
 	u32 pwr = 100;
     #ifdef __SWITCH__
     psmInitialize();
-	psmGetBatteryChargePercentage(&pwr);
+    psmGetBatteryChargePercentage(&pwr);
     psmExit();
     #endif
 	return pwr;

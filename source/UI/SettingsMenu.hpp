@@ -26,7 +26,12 @@
 #include "../Services/Power.hpp"
 #include "../Services/Settings.hpp"
 #include "../Services/Hid.hpp"
+#ifdef LEGACY_DRV
 #include "stratosphere/utilities.hpp"
+#endif
+#ifndef LEGACY_DRV
+#include "../Services/RCMReboot.hpp"
+#endif
 class SettingsMenu: public Menu
 {
     public:

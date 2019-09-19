@@ -17,7 +17,7 @@
 */
 
 #include "SettingsMenu.hpp"
-#include "../../release/a.hpp"
+#include "../../release/Version.hpp"
 SettingsMenu::SettingsMenu(SDL_Rect pos) : Menu("Settings", pos){
 	//Panel location
     panX = 500;
@@ -34,9 +34,8 @@ void SettingsMenu::Initialize() {
     // Basic Needlelaunch options
     MenuElements.push_back(new Button("Needlelaunch Options", 60, Y+=space, butW, butH, butCol, nullptr));
     Panel *needlemenu = new Panel(panX, panY);
-    std::string seed_needlemenu_ver_string = "This is Needlelaunch";
-    std::string version_true = needlelaunch_get_version_info();
-    std::string needlemenu_ver_string = seed_needlemenu_ver_string + version_true;
+    std::string version_seed = needlelaunch_compile_all();
+    std::string needlemenu_ver_string = version_seed;
     needlemenu->AddString(0, 0, std::string(needlemenu_ver_string));
     needlemenu->AddString(0, 0, "System FW Version" + Settings::GetFirmwareVersion());
     needlemenu->AddElement(new Option("Internet settings", "test", 0, optY+=space, optW, butH, butCol, 0, 
