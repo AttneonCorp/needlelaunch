@@ -38,10 +38,18 @@ void SettingsMenu::Initialize() {
     std::string needlemenu_ver_string = version_seed;
     needlemenu->AddString(0, 0, std::string(needlemenu_ver_string));
     needlemenu->AddString(0, 0, "System FW Version" + Settings::GetFirmwareVersion());
-    needlemenu->AddElement(new Option("Internet settings", "test", 0, optY+=space, optW, butH, butCol, 0, 
+    needlemenu->AddElement(new Option("Internet settings", "internet_settings", 0, optY+=space, optW, butH, butCol, 0, 
     []()->Result{
         Result rc = 0;
         rc = App::LaunchNetConnect();
+        return rc;
+    }));
+    // Unlink Accounts
+    needlemenu->AddString(0, 0, std::string("Unlink Nintendo Accounts"));
+    needlemenu->AddElement(new Option("Unlink Your Nintendo Account","unlink_button", 0, optY+=space, optW, butH, butCol, 0,
+    []()->Result{
+        Result rc = 0;
+        rc = UnlinkLocally();
         return rc;
     }));
     //Toggle lock screen
@@ -54,7 +62,7 @@ void SettingsMenu::Initialize() {
         return 0;
     }));
     needlemenu->AddString(0, 0, std::string("Reboot to RCM"));
-    needlemenu->AddElement(new Option("Reboot To RCM Mode", "test", 0, optY+=space, optW, butH, butCol, 0, 
+    needlemenu->AddElement(new Option("Reboot To RCM Mode", "reboot_rcm", 0, optY+=space, optW, butH, butCol, 0, 
     []()->Result{
 	Result rc = 0;
         RebootToRcm();

@@ -233,7 +233,7 @@ u128 App::LaunchPSelect() {
 Result App::LaunchShop() {
     Result rc = 0;
     #ifdef __SWITCH__
-    /*LibAppletArgs args;
+    LibAppletArgs args;
     AppletStorage storeIn, storeOut;
     
     appletCreateLibraryApplet(&currentApplet, AppletId_shop, LibAppletMode_AllForeground);
@@ -269,7 +269,7 @@ Result App::LaunchShop() {
     appletStorageClose(&storeIn);
     appletStorageClose(&storeOut);
     appletHolderClose(&currentApplet);
-    App::is_active_applet = false;*/
+    App::is_active_applet = false;
     #endif
     
     return rc;

@@ -46,11 +46,14 @@ void Rnx::Exit() {
         #endif
     #endif
 }
+#ifdef NOT_RNX
 Result Rnx::SetHbTidForDelta(u64 tid) {
-	Result rc = 0; // AMS
+	Result rc = 0; // AMS Or SX OS
 	return rc;
 }
-Result Rnx::SetHbTidForDeltaOnRnx(u64 tid) {
+#endif
+#ifndef NOT_RNX
+Result Rnx::SetHbTidForDelta(u64 tid) {
     Result rc = 0; // REINX
     #ifdef __SWITCH__
     IpcCommand c;
@@ -82,5 +85,5 @@ Result Rnx::SetHbTidForDeltaOnRnx(u64 tid) {
     #endif
     return rc;
 }
-
+#endif
 

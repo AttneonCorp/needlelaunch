@@ -17,6 +17,7 @@
 */
 
 #include "Settings.hpp"
+#include "../ConfigParser.hpp"
 SelectType Settings::gameSelType;
 GameAreaType Settings::gameAreaType;
 u32 Settings::currentTheme;
@@ -29,14 +30,14 @@ std::string Settings::GetFirmwareVersion() {
     #else
     std::string str = std::string("Unknown Version Info");
     #endif
-    #ifndef REINX
+    #ifdef AMS
     std::string new_str = str + "[AMS]";
     #endif
     #ifdef REINX
     std::string new_str = str + "[RNX]";
     #endif
     #ifdef SXOS
-    #error "SX OS is not yet supported"
+    std::string new_str = str + "[SX]";
     #endif
     return new_str;
 }
@@ -74,7 +75,7 @@ u64 Settings::GetSystemLangCode() {
 
 void Settings::SetDeviceNickname(std::string nick) {
     #ifdef __SWITCH__
-    //setsysSetDeviceNickname((char*)nick.c_str());
+    setsysSetDeviceNickname((char*)nick.c_str());
     #endif
 }
 
@@ -108,7 +109,7 @@ void Settings::SetAudioVolume(u8 vol) {
 
 std::string Settings::GetCurrentTheme() {
     std::vector<std::string> names;
-    std::string path = "/Themes";
+    std::string path = "/themes";
     if (!std::experimental::filesystem::exists(path)) return "";
     for (const auto & entry : std::experimental::filesystem::v1::directory_iterator(path)) {
         names.push_back(entry.path().string());

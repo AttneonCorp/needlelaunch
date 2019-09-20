@@ -33,7 +33,7 @@ Engine::Engine(u32 width, u32 height) {
     romfsMountFromFsdev("/ReiNX/titles/0100000000001000/romfs.bin", 0, "romfs");
     Rnx::SetHbTidForDeltaOnRnx(0x010000000000100F);
     #endif
-    #ifndef REINX // Atmosphere
+    #ifdef AMS // Atmosphere
     romfsMountFromFsdev("/atmosphere/titles/0100000000001000/romfs.bin", 0, "romfs");
     #endif
     #ifdef SXOS // SX OS

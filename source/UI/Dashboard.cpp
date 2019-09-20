@@ -67,7 +67,7 @@ void Dashboard::Initialize() {
         std::tuple<std::string, std::function<Result()>>{"AlbumButton", std::bind(App::LaunchAlbum, 2, true)}, //1,false | 2,true
         std::tuple<std::string, std::function<Result()>>{"HomebrewButton", App::LaunchHbl},
         std::tuple<std::string, std::function<Result()>>{"SettingsButton", std::bind(&Dashboard::OpenSettings, this)},
-        std::tuple<std::string, std::function<Result()>>{"SleepButton", Power::Reboot},
+        std::tuple<std::string, std::function<Result()>>{"SleepButton", Power::Sleep},
     };
     for(u32 but = 0; but < ButtonFuncs.size(); but++) {
         Buttons.push_back(new Button(

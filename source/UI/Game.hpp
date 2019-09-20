@@ -31,7 +31,6 @@
 #include "../Services/App.hpp"
 #include <malloc.h>
 #include <switch/services/sm.h>
-#include "../app.h"
 #include "NewsMenu.hpp"
 class Game: public GameBase
 {
