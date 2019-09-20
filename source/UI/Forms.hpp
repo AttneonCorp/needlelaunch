@@ -18,10 +18,10 @@
 
 #pragma once
 
-#include "Popup/MessageBox.hpp"
-#include "Menus/Panel.hpp"
-#include "Menus/Menu.hpp"
-#include "Menus/Option.hpp"
-#include "Menus/Image.hpp"
-#include "Menus/Button.hpp"
-#include "Menus/UIElement.hpp"
+#include "Popup\MessageBox.hpp"
+#include "Menus\Panel.hpp"
+#include "Menus\Menu.hpp"
+#include "Menus\Option.hpp"
+#include "Menus\Image.hpp"
+#include "Menus\Button.hpp"
+#include "Menus\UIElement.hpp"

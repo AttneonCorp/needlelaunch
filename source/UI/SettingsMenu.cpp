@@ -17,7 +17,7 @@
 */
 
 #include "SettingsMenu.hpp"
-#include "../../release/Version.hpp"
+
 SettingsMenu::SettingsMenu(SDL_Rect pos) : Menu("Settings", pos){
 	//Panel location
     panX = 500;
@@ -31,65 +31,59 @@ SettingsMenu::~SettingsMenu() {
 void SettingsMenu::Initialize() {
     u32 Y = 40, butW = 280, butH = 50, butCol = Graphics::GetDefaultSelCol(), optW = 350, optY = 20;
     u32 space = 15+butH;
-    // Basic Needlelaunch options
-    MenuElements.push_back(new Button("Needlelaunch Options", 60, Y+=space, butW, butH, butCol, nullptr));
-    Panel *needlemenu = new Panel(panX, panY);
-    std::string version_seed = needlelaunch_compile_all();
-    std::string needlemenu_ver_string = version_seed;
-    needlemenu->AddString(0, 0, std::string(needlemenu_ver_string));
-    needlemenu->AddString(0, 0, "System FW Version" + Settings::GetFirmwareVersion());
-    needlemenu->AddElement(new Option("Internet settings", "internet_settings", 0, optY+=space, optW, butH, butCol, 0, 
-    []()->Result{
-        Result rc = 0;
-        rc = App::LaunchNetConnect();
-        return rc;
-    }));
-    // Unlink Accounts
-    needlemenu->AddString(0, 0, std::string("Unlink Nintendo Accounts"));
-    needlemenu->AddElement(new Option("Unlink Your Nintendo Account","unlink_button", 0, optY+=space, optW, butH, butCol, 0,
-    []()->Result{
-        Result rc = 0;
-        rc = UnlinkLocally();
-        return rc;
-    }));
+    
     //Toggle lock screen
-    needlemenu->AddString(0, 0, std::string("Set The Launch Screen Flag"));
+    MenuElements.push_back(new Button("Lock Screen", 60, Y+=space, butW, butH, butCol, nullptr));
+    Panel *lock = new Panel(panX, panY);
+    lock->AddString(0, 0, std::string("Toggle the lock screen flag."));
     std::vector<std::string> lck {"Off", "On"};
-    needlemenu->AddElement(new Option("Lock screen:", lck, 0, optY+=space, optW, butH, butCol, Settings::GetLockScreenFlag(), 
+    lock->AddElement(new Option("Lock screen:", lck, 0, optY+=space, optW, butH, butCol, Settings::GetLockScreenFlag(), 
     []()->Result{ 
         bool l = Settings::GetLockScreenFlag();
         Settings::SetLockScreenFlag(!l);
         return 0;
     }));
-    needlemenu->AddString(0, 0, std::string("Reboot to RCM"));
-    needlemenu->AddElement(new Option("Reboot To RCM Mode", "reboot_rcm", 0, optY+=space, optW, butH, butCol, 0, 
+    Panels.push_back(lock);
+    
+    //Internet/network settings
+    optY = 20;
+    MenuElements.push_back(new Button("Internet", 60, Y+=space, butW, butH, butCol, nullptr));
+    Panel *internet = new Panel(panX, panY);
+    internet->AddString(0, 0, std::string("View internet settings."));
+    internet->AddElement(new Option("Internet settings", "test", 0, optY+=space, optW, butH, butCol, 0, 
     []()->Result{
-	Result rc = 0;
-        RebootToRcm();
+        Result rc = 0;
+        rc = App::LaunchNetConnect();
         return rc;
     }));
-
-
+    Panels.push_back(internet);
+    
     //Manage titles
-    needlemenu->AddString(0, 0, std::string("Data Management [WIP]"));
+    MenuElements.push_back(new Button("Data Management", 60, Y+=space, butW, butH, butCol, nullptr));
+    Panel *dataMan = new Panel(panX, panY);
+    dataMan->AddString(0, 0, std::string("Manage your data."));
+    Panels.push_back(dataMan);
+    
     //User customization
-    needlemenu->AddString(0, 0, std::string("Users"));
-    needlemenu->AddString(0, 0, std::string("Edit user profiles."));
-    needlemenu->AddElement(new Image(0, 40, 256, 256, Account::GetProfileImage(Account::GetFirstAccount()), 
-    [needlemenu]()->Result{
+    MenuElements.push_back(new Button("Users", 60, Y+=space, butW, butH, butCol, nullptr));
+    Panel *user = new Panel(panX, panY);
+    user->AddString(0, 0, std::string("Edit user profiles."));
+    user->AddElement(new Image(0, 40, 256, 256, Account::GetProfileImage(Account::GetFirstAccount()), 
+    [user]()->Result{
         Result rc = 0;
         rc = Account::SetCustomProfileImage("/profile.jpg");
-        needlemenu->SetImage(0, Account::GetProfileImage(Account::GetFirstAccount()));
+        user->SetImage(0, Account::GetProfileImage(Account::GetFirstAccount()));
         return rc;
     }));
     std::vector<std::string> pfp {"Use pre-defined image"};
-    needlemenu->AddElement(new Option("", pfp, 0, 260+space, optW, butH, butCol, 0, 
-    [needlemenu]()->Result{
+    user->AddElement(new Option("", pfp, 0, 260+space, optW, butH, butCol, 0, 
+    [user]()->Result{
         Result rc = 0;
         //non-custom pfp
         return rc;
     }));
-    Panels.push_back(needlemenu);
+    Panels.push_back(user);
+    
     //Mechanics of how the UI works
     MenuElements.push_back(new Button("Look and Feel", 60, Y+=space, butW, butH, butCol, nullptr));
     Panel *look = new Panel(panX, panY);
@@ -103,7 +97,15 @@ void SettingsMenu::Initialize() {
         return rc;
     }));
     std::vector<std::string> vrmode {"Disable", "Enable"};
-    // VR Mode is not yet in libnx
+    look->AddElement(new Option("VR Mode:", vrmode, 0, optY+=space, optW, butH, butCol, App::IsVrEnabled(), 
+    []()->Result{
+        Result rc = 0;
+        bool b = App::IsVrEnabled();
+        rc = appletSetVrModeEnabled(!b);
+        if(!b) rc = appletBeginVrModeEx();
+        else rc = appletEndVrModeEx();
+        return rc;
+    }));
     Panels.push_back(look);
     
     //Themes

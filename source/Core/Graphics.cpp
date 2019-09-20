@@ -36,7 +36,7 @@ void Graphics::Init(SDL_Rect pos) {
     SDL_SetRenderDrawColor(Rend, 0xFF, 0xFF, 0xFF, 0xFF);
     Graphics::ctxt = Context();
     
-    appletRequestToGetForeground();
+    appletRequestForeground();
     //appletSetHandlesRequestToDisplay(true);
 }
 

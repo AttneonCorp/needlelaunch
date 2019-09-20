@@ -17,12 +17,11 @@
 */
 
 #include "Power.hpp"
-#include "Settings.hpp"
-#include "RCMReboot.hpp"
+
 Result Power::Shutdown() {
     #ifdef __SWITCH__
     appletSetHandlesRequestToDisplay(false);
-    appletStartShutdownSequence();
+	appletStartShutdown();    
     #endif
     return 0;
 }
@@ -30,19 +29,14 @@ Result Power::Shutdown() {
 Result Power::Reboot() {
     #ifdef __SWITCH__
     appletSetHandlesRequestToDisplay(false);
-    appletStartRebootSequence();
+	appletStartReboot();
     #endif
     return 0;
 }
-Result Power::RcmReboot() {
-    RebootToRcm();
-    return 0;
-}
+
 Result Power::Sleep() {
     #ifdef __SWITCH__
-    u8 flag;
-    flag = Settings::GetLockScreenFlag();
-    appletStartSleepSequence(flag);
+    appletStartSleepSequence();
     #endif
     return 0;
 }
@@ -51,7 +45,7 @@ u32 Power::GetBatteryLife() {
 	u32 pwr = 100;
     #ifdef __SWITCH__
     psmInitialize();
-    psmGetBatteryChargePercentage(&pwr);
+	psmGetBatteryChargePercentage(&pwr);
     psmExit();
     #endif
 	return pwr;

@@ -17,8 +17,7 @@
 */
 
 #include "App.hpp"
-// Not yet working function
-//Result appletRequestLaunchApplication(u64 titleID, AppletStorage* s);
+
 AppletHolder App::currentApplication;
 AppletHolder App::currentApplet;
 u32 App::appletSelectInd;
@@ -27,28 +26,23 @@ u8 App::dashLayer;
 
 u32 App::lastAeCmd;
 u32 App::lastSamsCmd;
-bool App::is_active; // Application one
-bool App::is_active_applet; // Applet one
-AppletApplication App::app;
+
 /*
 *   Application
 */
 Result App::LaunchGame(u64 tid, u128 userID) {
-	Result rc = -1;
-	rc = App::LaunchGameTrue(tid, userID, App::app);
-	return rc;
-}
-Result App::LaunchGameTrue(u64 tid, u128 userID, AppletApplication app) {
     Result rc = 0;
     #ifdef __SWITCH__
     AppletStorage aStore;
-    rc = appletCreateApplication(&app, tid);
+    
+    rc = appCreate(&currentApplication, tid, Create_App);
     if(R_FAILED(rc)) {
-        ShowError("Error launching game. The error is shown below:\n", "Error initializing handle", rc);
+        ShowError("Error launching game", "Error initializing handle", rc);
     }
+    
     rc = appletUnlockForeground();
     if(R_FAILED(rc)) {
-        ShowError("Error launching game. The error is shown below:\n", "Error unlocking foreground", rc);
+        ShowError("Error launching game", "Error unlocking foreground", rc);
     }
     
     struct InData{
@@ -66,33 +60,33 @@ Result App::LaunchGameTrue(u64 tid, u128 userID, AppletApplication app) {
     
     rc = appletCreateStorage(&aStore, sizeof(InData));
     if(R_FAILED(rc)) {
-        ShowError("Error launching game. The error is shown below:\n", "Error initializing arg storage", rc);
+        ShowError("Error launching game", "Error initializing arg storage", rc);
     }
 
     rc = appletStorageWrite(&aStore, 0, &indata, sizeof(InData));
     if(R_FAILED(rc)) {
-        ShowError("Error launching game. The error is shown below:\n", "Error writing arg storage", rc);
+        ShowError("Error launching game", "Error writing arg storage", rc);
     }
     
-    rc = appletPopLaunchParameter(&aStore, AppletLaunchParameterKind_PreselectedUser);
+    rc = appletHolderPushInLaunchParam(&currentApplication, AppletLaunchParameterKind_PreselectedUser, &aStore);
     if(R_FAILED(rc)) {
-        ShowError("Error launching game. The error is shown below:\n", "Error in function appletPopLaunchParameter", rc);
+        ShowError("Error launching game", "Error appletHolderPushInLaunchParam", rc);
     }
     
     rc = appletHolderStart(&currentApplication);
     if(R_FAILED(rc)) {
-        ShowError("Error launching game\n", "Please look up the error code for more information", rc);
+        ShowError("Error launching game", "Lookup errorcode for more info", rc);
     }
     
-    rc = appletApplicationRequestForApplicationToGetForeground(&app);
+    rc = appRequestForApplicationToGetForeground(&currentApplication);
     if(R_FAILED(rc)) {
-        ShowError("Error launching game. The error is shown below:\n", "Error appRequestForApplicationToGetForeground", rc);
+        ShowError("Error launching game", "Error appRequestForApplicationToGetForeground", rc);
     }
-    App::is_active = true;
+    currentApplication.active = true;
     appletHolderJoin(&currentApplication);
     appletHolderClose(&currentApplication);
     appletStorageClose(&aStore);
-    App::is_active = false;
+    currentApplication.active = false;
     #endif
     
     return rc;
@@ -156,23 +150,23 @@ Result App::LaunchAlbum(u8 arg, bool startupSound) {
     rc = appletCreateStorage(&storeIn, sizeof(stindata));
     if(R_FAILED(rc)) {
         appletStorageClose(&storeIn);
-        ShowError("Error launching album\n", "Error creating storage.", rc);
+        ShowError("Error launching album", "Error creating storage.", rc);
     }
     
     rc = appletStorageWrite(&storeIn, 0, &stindata, sizeof(stindata));
     if(R_FAILED(rc)) {
         appletStorageClose(&storeIn);
-        ShowError("Error launching album\n", "Error writing storage.", rc);
+        ShowError("Error launching album", "Error writing storage.", rc);
     }
     appletHolderPushInData(&currentApplet, &storeIn);
     
-    App::is_active_applet = true;
+    currentApplet.active = true;
     rc = appletHolderStart(&currentApplet);
     appletHolderJoin(&currentApplet);
     
     appletStorageClose(&storeIn);
     appletHolderClose(&currentApplet);
-    App::is_active_applet = false;
+    currentApplet.active = false;
     #endif
     
     return rc;
@@ -187,7 +181,7 @@ u128 App::LaunchPSelect() {
     
     rc = appletCreateLibraryApplet(&currentApplet, AppletId_playerSelect, LibAppletMode_AllForeground);
     if(R_FAILED(rc)) {
-        ShowError("Error launching player select\n", "Error creating lib applet.", rc);
+        ShowError("Error launching player select", "Error creating lib applet.", rc);
     }
     
     libappletArgsCreate(&args, 0);
@@ -198,21 +192,21 @@ u128 App::LaunchPSelect() {
     rc = appletCreateStorage(&storeIn, sizeof(stindata));
     if(R_FAILED(rc)) {
         appletStorageClose(&storeIn);
-        ShowError("Error launching player select\n", "Error creating storage.", rc);
+        ShowError("Error launching player select", "Error creating storage.", rc);
     }
     
     rc = appletStorageWrite(&storeIn, 0, stindata, sizeof(stindata));
     if(R_FAILED(rc)) {
         appletStorageClose(&storeIn);
-        ShowError("Error launching player select\n", "Error writing storage.", rc);
+        ShowError("Error launching player select", "Error writing storage.", rc);
     }
     appletHolderPushInData(&currentApplet, &storeIn);
     
-    App::is_active_applet = true;
+    currentApplet.active = true;
     rc = appletHolderStart(&currentApplet);
     appletHolderJoin(&currentApplet);
     if(R_FAILED(rc)) {
-        ShowError("Error launching player select\n", "Error starting applet.", rc);
+        ShowError("Error launching player select", "Error starting applet.", rc);
     }
     else {
         appletHolderPopOutData(&currentApplet, &storeOut);
@@ -223,7 +217,7 @@ u128 App::LaunchPSelect() {
     appletStorageClose(&storeIn);
     appletStorageClose(&storeOut);
     appletHolderClose(&currentApplet);
-    App::is_active_applet = false;
+    currentApplet.active = false;
     
     #endif
     
@@ -233,7 +227,7 @@ u128 App::LaunchPSelect() {
 Result App::LaunchShop() {
     Result rc = 0;
     #ifdef __SWITCH__
-    LibAppletArgs args;
+    /*LibAppletArgs args;
     AppletStorage storeIn, storeOut;
     
     appletCreateLibraryApplet(&currentApplet, AppletId_shop, LibAppletMode_AllForeground);
@@ -254,7 +248,7 @@ Result App::LaunchShop() {
     }
     appletHolderPushInData(&currentApplet, &storeIn);
     
-    App::is_active_applet = true;
+    currentApplet.active = true;
     rc = appletHolderStart(&currentApplet);
     appletHolderJoin(&currentApplet);
     if(R_FAILED(rc)) {
@@ -269,7 +263,7 @@ Result App::LaunchShop() {
     appletStorageClose(&storeIn);
     appletStorageClose(&storeOut);
     appletHolderClose(&currentApplet);
-    App::is_active_applet = false;
+    currentApplet.active = false;*/
     #endif
     
     return rc;
@@ -283,11 +277,11 @@ Result App::LaunchWebsite(std::string url) {
     WebExitReason exitReason = WebExitReason_ExitButton;
     rc = webPageCreate(&config, url.c_str());
     if (R_SUCCEEDED(rc)) {
-        App::is_active_applet = true;
+        currentApplet.active = true;
         rc = webConfigShow(&config, &reply);
         if (R_SUCCEEDED(rc))
             rc = webReplyGetExitReason(&reply, &exitReason);
-        App::is_active_applet = false;
+        currentApplet.active = false;
     }
     #endif
 
@@ -311,10 +305,10 @@ Result App::LaunchSwkbd(char out[0xc00], std::string title, std::string placehol
             if(tempstr[0] != '\0')
                 strcpy(out, tempstr);
         }else if(rc != (Result)0x5d59) {
-            ShowError("Software Keyboard Error\n", "Unknown error, Lookup errorcode for more info", rc);
+            ShowError("Software Keyboard Error", "Unknown error, Lookup errorcode for more info", rc);
         }
     }else{
-        ShowError("Software Keyboard Error\n", "Unknown error, Lookup errorcode for more info", rc);
+        ShowError("Software Keyboard Error", "Unknown error, Lookup errorcode for more info", rc);
     }
     swkbdClose(&kbd);
     return rc;
@@ -324,11 +318,11 @@ Result App::LaunchNetConnect() {
     Result rc = 0;
     #ifdef __SWITCH__
     appletCreateLibraryApplet(&currentApplet, AppletId_netConnect, LibAppletMode_AllForeground);
-    App::is_active_applet = true;
+    currentApplet.active = true;
     rc = appletHolderStart(&currentApplet);
     appletHolderJoin(&currentApplet);
     appletHolderClose(&currentApplet);
-    App::is_active_applet = false;
+    currentApplet.active = false;
     #endif
     
     return rc;
@@ -338,11 +332,11 @@ Result App::LaunchController() {
     Result rc = 0;
     #ifdef __SWITCH__
     appletCreateLibraryApplet(&currentApplet, AppletId_controller, LibAppletMode_AllForeground);
-    App::is_active_applet = true;
+    currentApplet.active = true;
     rc = appletHolderStart(&currentApplet);
     appletHolderJoin(&currentApplet);
     appletHolderClose(&currentApplet);
-    App::is_active_applet = false;
+    currentApplet.active = false;
     #endif
     
     return rc;
@@ -366,11 +360,11 @@ Result App::ShowError(std::string errText, std::string details, Result rc) {
     appletStorageWrite(&errStor, 0, argBuf, 0x1018);
     appletHolderPushInData(&currentApplet, &errStor);
     
-    App::is_active_applet = true;
+    currentApplet.active = true;
     appletHolderStart(&currentApplet);
     appletHolderJoin(&currentApplet);
     appletHolderClose(&currentApplet);
-    App::is_active_applet = false;
+    currentApplet.active = false;
     #endif
     
     return 0;
@@ -380,11 +374,11 @@ Result App::LaunchHbl() {
     Result rc = 0;
     #ifdef __SWITCH__
     appletCreateLibraryApplet(&currentApplet, AppletId_offlineWeb, LibAppletMode_AllForeground);
-    App::is_active_applet = true;
+    currentApplet.active = true;
     rc = appletHolderStart(&currentApplet);
     appletHolderJoin(&currentApplet);
     appletHolderClose(&currentApplet);
-    App::is_active_applet = false;
+    currentApplet.active = false;
     #endif
     
     return rc;
@@ -398,10 +392,10 @@ Result App::CommandHandler(u32 cmd) {
         case CMD_Home:
         {
             #ifdef __SWITCH__
-            if(App::is_active) {
+            if(currentApplication.active) {
                 appletHolderRequestExit(&currentApplication);
             }
-            else if(App::is_active_applet) {
+            else if(currentApplet.active) {
                 appletHolderRequestExit(&currentApplet);
             }
             else {

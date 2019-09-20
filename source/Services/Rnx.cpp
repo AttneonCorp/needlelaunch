@@ -22,39 +22,32 @@ static Service g_rnxSrv;
 static u64 g_rnxRefCnt;
 
 bool Rnx::IsUsingReiNX() {
-    return true;
+    #ifdef __SWITCH__
+    if (serviceIsActive(&g_rnxSrv)) return true;
+    #endif
+    return false;
 }
 
 Result Rnx::Initialize() {
     Result rc = 0;
-    #ifdef REINX
     #ifdef __SWITCH__
     atomicIncrement64(&g_rnxRefCnt);
     if (serviceIsActive(&g_rnxSrv)) return 0;
     rc = smGetService(&g_rnxSrv, "rnx");
     #endif
-    #endif
     return rc;
 }
 
 void Rnx::Exit() {
-    #ifdef REINX
-        #ifdef __SWITCH__
-        if (atomicDecrement64(&g_rnxRefCnt) == 0) {
-            serviceClose(&g_rnxSrv);
-        }
-        #endif
+    #ifdef __SWITCH__
+    if (atomicDecrement64(&g_rnxRefCnt) == 0) {
+        serviceClose(&g_rnxSrv);
+    }
     #endif
 }
-#ifdef NOT_RNX
+
 Result Rnx::SetHbTidForDelta(u64 tid) {
-	Result rc = 0; // AMS Or SX OS
-	return rc;
-}
-#endif
-#ifndef NOT_RNX
-Result Rnx::SetHbTidForDelta(u64 tid) {
-    Result rc = 0; // REINX
+    Result rc = 0;
     #ifdef __SWITCH__
     IpcCommand c;
     ipcInitialize(&c);
@@ -85,5 +78,3 @@ Result Rnx::SetHbTidForDelta(u64 tid) {
     #endif
     return rc;
 }
-#endif
-

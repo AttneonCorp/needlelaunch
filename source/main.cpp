@@ -24,7 +24,7 @@
 #include <switch.h>
 
 #include "Core/Engine.hpp"
-#include "ConfigParser.hpp"
+
 #ifdef __SWITCH__
 extern "C"{
     u32 __nx_applet_type = AppletType_SystemApplet;

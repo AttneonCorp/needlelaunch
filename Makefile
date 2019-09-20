@@ -17,10 +17,10 @@ include $(DEVKITPRO)/libnx/switch_rules
 # INCLUDES is a list of directories containing header files
 # EXEFS_SRC is the optional input directory containing data copied into exefs, if anything this normally should only contain "main.npdm".
 #---------------------------------------------------------------------------------
-TITLE           :=  NeedleLaunch
+TITLE       :=  Delta Launch
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	release  source source/UI source/Services source/Core source/UI/Menus source/UI/Popup
+SOURCES		:=	source source/UI source/Services source/Core source/UI/Menus source/UI/Popup
 DATA		:=	data
 INCLUDES	:=	include
 ROMFS	    :=	romfs
@@ -31,22 +31,22 @@ EXEFS_SRC   := exefs
 # options for code generation
 #---------------------------------------------------------------------------------
 ARCH	:=	-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE
-VERSION := 	"1"
-CFLAGS	:=	-g -Wall -ffunction-sections $(ARCH) $(DEFINES) $(INCLUDE) -D__SWITCH__ -DTITLE='"$(TITLE)"' -I$(CURDIR)/include
+
+CFLAGS	:=	-g -Wall -ffunction-sections $(ARCH) $(DEFINES) $(INCLUDE) -D__SWITCH__ -DTITLE='"$(TITLE)"'
 
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -O2 -s -fno-exceptions -std=gnu++17 -lstdc++fs
 
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lfreetype -lwebp -lSDL2_mixer -lwebp -lmodplug -lwebp -lmpg123 -lwebp -lvorbisidec -logg -lSDL2_ttf -lSDL2_gfx -lSDL2_image -lpng -ljpeg `sdl2-config --libs` -lwebp `freetype-config --libs` -lcurl -lmbedtls -lmbedcrypto -lmbedx509 -lz -lnx -lstdc++fs
+LIBS	:= -lfreetype -lSDL2_mixer -lmodplug -lmpg123 -lvorbisidec -logg -lSDL2_ttf -lSDL2_gfx -lSDL2_image -lpng -ljpeg `sdl2-config --libs` `freetype-config --libs` -lcurl -lmbedtls -lmbedcrypto -lmbedx509 -lz -lnx -lstdc++fs
 
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/HomebrewTarget
+LIBDIRS	:= $(PORTLIBS) $(LIBNX)
 
 
 #---------------------------------------------------------------------------------
@@ -113,24 +113,26 @@ endif
 
 #---------------------------------------------------------------------------------
 all: $(BUILD)
+
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 	@mkdir -p ./exefs
 	@mkdir -p ./0100000000001000
-	@mkdir -p out/titles
 	@mv $(OUTPUT).nso ./exefs/main
 	@mv $(OUTPUT).npdm ./exefs/main.npdm
 	@build_pfs0 exefs ./0100000000001000/exefs.nsp
 	@build_romfs romfs ./0100000000001000/romfs.bin
 	@rm -rf ./exefs
-	@rm -rf out/titles/0100000000001000
-	@mv  ./0100000000001000/ out/titles/
+	@rm -rf F:/ReiNX/titles/0100000000001000
+	@mv  ./0100000000001000/ F:/ReiNX/titles/
 
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
-	@rm -rf $(BUILD) 0100000000001000 main $(TARGET).elf out build
+	@rm -fr $(BUILD) 0100000000001000 main $(TARGET).elf
+
+
 #---------------------------------------------------------------------------------
 else
 .PHONY:	all

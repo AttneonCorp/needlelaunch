@@ -23,7 +23,7 @@
 #include <string>
 #include <malloc.h>
 #include <switch.h>
-#include <switch/services/sm.h>
+
 class Account
 {
     public:

@@ -28,17 +28,27 @@ Engine::Engine(u32 width, u32 height) {
     screenPos.w = width;
     screenPos.h = height;
     running = true;
+    
+    //Detect reinx
+    if(!Rnx::IsUsingReiNX()) {
+        if(R_SUCCEEDED(romfsMountFromFsdev("/atmosphere/titles/0100000000001000/romfs.bin", 0, "romfs"))) goto err;
+        if(R_SUCCEEDED(romfsMountFromFsdev("/sxos/titles/0100000000001000/romfs.bin", 0, "romfs"))) goto err;
+        err:
+        Graphics::Init(screenPos);
+        SDL_Surface *surf = IMG_Load("romfs:/Graphics/BSOD.png");
+        SDL_Texture *tex = Graphics::CreateTexFromSurf(surf);
+        Graphics::RenderTexture(tex, screenPos);
+        SDL_FreeSurface(surf);
+        SDL_DestroyTexture(tex);
+        Graphics::Render();
+        do { Hid::KeyProcess(); } while(!Hid::Input);
+        Power::Shutdown();
+    }
+    
     //Mount romfs
-    #ifdef REINX // ReiNX
     romfsMountFromFsdev("/ReiNX/titles/0100000000001000/romfs.bin", 0, "romfs");
-    Rnx::SetHbTidForDeltaOnRnx(0x010000000000100F);
-    #endif
-    #ifdef AMS // Atmosphere
-    romfsMountFromFsdev("/atmosphere/titles/0100000000001000/romfs.bin", 0, "romfs");
-    #endif
-    #ifdef SXOS // SX OS
-    romfsMountFromFsdev("/sx/titles/0100000000001000/romfs.bin", 0, "romfs");
-    #endif
+    
+    Rnx::SetHbTidForDelta(0x010000000000100F);
 }
 
 Engine::~Engine() {
@@ -66,7 +76,7 @@ void Engine::Initialize() {
     State = (Settings::GetLockScreenFlag() ? STATE_LOCKSCREEN : STATE_DASHBOARD);
     
     appletLoadAndApplyIdlePolicySettings();
-    //appletAllowToEnterSleep is a stub... LOL
+    appletAllowToEnterSleep();
 
 	//Start threads
     frndThread = new ThreadManager(Threads::FriendThread);

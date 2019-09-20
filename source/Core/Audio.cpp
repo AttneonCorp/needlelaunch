@@ -17,10 +17,9 @@
 */
 
 #include "Audio.hpp"
-#include <malloc.h>
 
 void Audio::Init() {
-	static const AudioRendererConfig arConfig =
+	/*static const AudioRendererConfig arConfig =
     {
         .output_rate     = AudioRendererOutputRate_48kHz,
         .num_voices      = 24,
@@ -34,11 +33,11 @@ void Audio::Init() {
     Result res;
     res = audrenInitialize(&arConfig);
     bool initedDriver = false;
-    bool initedAudren = R_SUCCEEDED(res);
+    bool initedAudren = R_SUCCEEDED(res);*/
 }
 
 void Audio::Load(std::string file, bool loop) {
-	FILE *fp = fopen(file.c_str(), "rb");
+	/*FILE *fp = fopen(file.c_str(), "rb");
 	fseek(fp, 0, SEEK_END);
 	size_t fsize = ftell(fp);
 	rewind(fp);
@@ -54,7 +53,7 @@ void Audio::Load(std::string file, bool loop) {
     wavebuf.size = fsize;
     wavebuf.start_sample_offset = 0;
     wavebuf.end_sample_offset = fsize/2;
-    wavebuf.is_looping = loop;
+    wavebuf.is_looping = loop;*/
 }
 
 void Audio::Exit() {

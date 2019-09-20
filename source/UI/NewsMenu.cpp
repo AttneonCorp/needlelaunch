@@ -35,7 +35,7 @@ void NewsMenu::AddStory(std::string title, std::string body, SDL_Texture *img) {
     Panel *articles = new Panel(panX, panY);
     MenuElements.push_back(new Image(20, Y+(MenuElements.size()*space), imgW, imgH, img, 
     [&]()->Result{
-        msgBox->Show("Welcome", "Needlelaunch Test Message", MSGBOX_OK);
+        msgBox->Show("Test", "hello ", MSGBOX_OK);
         return 0;
     }));
     articles->AddString(10, 0, title);

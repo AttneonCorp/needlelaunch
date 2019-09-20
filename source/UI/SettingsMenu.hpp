@@ -26,8 +26,7 @@
 #include "../Services/Power.hpp"
 #include "../Services/Settings.hpp"
 #include "../Services/Hid.hpp"
-#include "../Services/NintendoUnlink.hpp"
-#include "../Services/RCMReboot.hpp"
+
 class SettingsMenu: public Menu
 {
     public:

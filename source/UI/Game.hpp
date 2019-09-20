@@ -28,25 +28,23 @@
 #include "../Services/App.hpp"
 #include "../Services/Account.hpp"
 #include "../Core/Graphics.hpp"
-#include "../Services/App.hpp"
-#include <malloc.h>
-#include <switch/services/sm.h>
-#include "NewsMenu.hpp"
+
 class Game: public GameBase
 {
     public:
-	Result AddNewsStory(std::string title, std::string body, SDL_Texture *img, SDL_Rect pos);
-	Game();
+		Game();
         ~Game();
         void MountSaveData();
         Result Run();
-	//Getters/setters
-	u64 GetTitleId() { return TitleId; }
-	void SetTitleId(u64 tid) { TitleId = tid; }
+		
+		//Getters/setters
+		u64 GetTitleId() { return TitleId; }
+		void SetTitleId(u64 tid) { TitleId = tid; }
         std::string GetName() { return Name; }
         void SetName(std::string name) { Name = name; }
         std::string GetAuthor() { return Author; }
         void SetAuthor(std::string author) { Author = author; }
+        
     private:
         std::string Author;
         u64 TitleId;

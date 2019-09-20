@@ -21,8 +21,8 @@
 class Logger {
     public:
         static void write(std::string str) {
-            FILE *fp = fopen("/needlelog.txt", "a+"); // Deltalaunch != Needlelaunch
-            std::string s = (std::string("[NeedleLog Entry]") + str + std::string("\n")).c_str();
+            FILE *fp = fopen("/log.txt", "a+");
+            std::string s = (std::string("[Log] ") + str + std::string("\n")).c_str();
             fwrite(s.c_str(), strlen(s.c_str()), 1, fp);
             fclose(fp);
         }

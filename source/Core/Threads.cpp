@@ -37,7 +37,7 @@ bool Threads::SystemAppletMessage() {
     {
         eventWait(&epop, U64_MAX);
         AppletStorage st;
-        rc = appletPopFromGeneralChannel(&st);
+        rc = appletGetPopFromGeneralChannel(&st);
         if(rc == 0) {
 			s64 size = 0;
 			appletStorageGetSize(&st, &size);
@@ -233,11 +233,8 @@ bool Threads::AeMessageThread() {
         }
         case 34:
         {
-	    #ifndef STABLE
-	    bool out = true;
-            App::CommandHandler(appletIsInControllerFirmwareUpdateSection(&out));
+            //App::CommandHandler(appletIsInControllerFirmwareUpdateSection() & 1 ? 64 : 65);
             break;
-	    #endif
         }
     }
     #endif

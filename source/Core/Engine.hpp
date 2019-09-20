@@ -37,7 +37,7 @@
 #include "../Services/Power.hpp"
 #include "../Services/Settings.hpp"
 #include "../Services/Network.hpp"
-#include "../ConfigParser.hpp"
+
 enum EngineState {
 	STATE_LOCKSCREEN,
 	STATE_DASHBOARD,

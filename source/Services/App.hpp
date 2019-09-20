@@ -33,35 +33,34 @@ enum Command {
     CMD_Shutdown = 22,
     CMD_Reboot = 24,
 };
+
 class App
 {
     public:
-	static Result LaunchGame(u64 tid, u128 userID);
-        static Result LaunchGameTrue(u64 tid, u128 userID, AppletApplication app);
-	static Result GetAppRecords(std::vector<NsApplicationRecord> &recs);
+		static Result LaunchGame(u64 tid, u128 userID);
+        static Result GetAppRecords(std::vector<NsApplicationRecord> &recs);
         static bool IsVrEnabled();
-	static NsApplicationControlData GetGameControlData(u64 tid, u8 flag);
+		static NsApplicationControlData GetGameControlData(u64 tid, u8 flag);
         static bool IsGamecardInserted();
-	static Result LaunchAlbum(u8 arg, bool startupSound);
+		static Result LaunchAlbum(u8 arg, bool startupSound);
         static u128 LaunchPSelect();
-	static Result LaunchShop();
+		static Result LaunchShop();
         static Result LaunchWebsite(std::string url);
         static Result LaunchNetConnect();
         static Result LaunchController();
         static Result LaunchSwkbd(char out[0xc00], std::string title, std::string placehold, std::string oktxt, std::string initTxt);
-	static Result ShowError(std::string text1, std::string text2, Result rc);
-	static Result LaunchHbl();
+		static Result ShowError(std::string text1, std::string text2, Result rc);
+		static Result LaunchHbl();
         static Result CommandHandler(u32 cmd);
-	static AppletHolder currentApplication;
+		
+		static AppletHolder currentApplication;
         static AppletHolder currentApplet;
         static u32 gameSelectInd;
         static u32 appletSelectInd;
         static u8 dashLayer;
+        
         static u32 lastAeCmd;
-	static u32 lastSamsCmd;
-	static bool is_active; // Application one
-	static bool is_active_applet; // Applet one
-    	static AppletApplication app;
+		static u32 lastSamsCmd;
     private:
         static void ChangeHeap(size_t size) { void *addr; svcSetHeapSize(&addr, size); }
 };

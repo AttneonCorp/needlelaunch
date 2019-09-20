@@ -17,7 +17,7 @@
 */
 
 #include "Settings.hpp"
-#include "../ConfigParser.hpp"
+
 SelectType Settings::gameSelType;
 GameAreaType Settings::gameAreaType;
 u32 Settings::currentTheme;
@@ -28,18 +28,10 @@ std::string Settings::GetFirmwareVersion() {
     setsysGetFirmwareVersion(&firm);
     std::string str = std::string(firm.display_version);
     #else
-    std::string str = std::string("Unknown Version Info");
+    std::string str = std::string("0.0.0");
     #endif
-    #ifdef AMS
-    std::string new_str = str + "[AMS]";
-    #endif
-    #ifdef REINX
-    std::string new_str = str + "[RNX]";
-    #endif
-    #ifdef SXOS
-    std::string new_str = str + "[SX]";
-    #endif
-    return new_str;
+    
+    return str + " ReiNX";
 }
 
 std::string Settings::GetSerialNumber() {
@@ -59,7 +51,7 @@ std::string Settings::GetDeviceNickname() {
     setsysGetDeviceNickname(nick);
     std::string str = std::string(nick);
     #else
-    std::string str = std::string("Needletail");
+    std::string str = std::string("Delta");
     #endif
     return str;
 }
@@ -75,41 +67,41 @@ u64 Settings::GetSystemLangCode() {
 
 void Settings::SetDeviceNickname(std::string nick) {
     #ifdef __SWITCH__
-    setsysSetDeviceNickname((char*)nick.c_str());
+    //setsysSetDeviceNickname((char*)nick.c_str());
     #endif
 }
 
 u8 Settings::GetLockScreenFlag() {
     u8 flag = 0;
     #ifdef __SWITCH__
-    GetLockScreenFlag();
+    setsysGetLockScreenFlag(&flag);
     #endif
     return flag;
 }
 
 void Settings::SetLockScreenFlag(u8 flag) {
     #ifdef __SWITCH__
-    SetLockScreenFlag(flag);
+    setsysSetLockScreenFlag(flag);
     #endif
 }
 
 u8 Settings::GetAudioVolume() {
     u8 vol = 0;
     #ifdef __SWITCH__
-    GetAudioVolume();
+    setsysGetAudioVolume(&vol);
     #endif
     return vol;
 }
 
 void Settings::SetAudioVolume(u8 vol) {
     #ifdef __SWITCH__
-    SetAudioVolume(vol);
+    setsysSetAudioVolume(vol);
     #endif
 }
 
 std::string Settings::GetCurrentTheme() {
     std::vector<std::string> names;
-    std::string path = "/themes";
+    std::string path = "/Themes";
     if (!std::experimental::filesystem::exists(path)) return "";
     for (const auto & entry : std::experimental::filesystem::v1::directory_iterator(path)) {
         names.push_back(entry.path().string());
