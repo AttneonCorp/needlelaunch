@@ -5,7 +5,7 @@
 
 **Configuring:**
 
-Before building needlelaunch, you will need to configure it. Enter the project dir (the one with this README in it) and copy examples/Config.hpp to the release/ folder. Then open release/Config.hpp and uncomment the lines depending on your needs.
+Before building needlelaunch, you will need to configure it. Enter the project dir (the one with this README in it) and copy examples/Config.hpp to the release/ folder.<br/> Then open release/Config.hpp and uncomment the lines depending on your needs.
 
 **Compiling:**
 
@@ -15,9 +15,14 @@ You'll need devkitpro, switch-sdl2, switch-libwebp. You can install dependencies
 Once you are done with the configuration step, run the 'make' command.<br/> The output will be in the out folder.
 Copy the out/titles folder to your SD Card.
 
+**Status**
+
+Currently it is still a WIP and I am not responsible for any issues while using this software.<br/>
+Only use this if you have a NAND Backup and a fusee vulnerable switch
+
 **Troubleshooting**
 
-For any help and support, please make an issue on the Github Issue Tracker.<br/> Once this releases, I will make a discord for troubleshooting
+For any help and support, please make an issue on the Github Issue Tracker.<br/> Once this releases, I will make a discord for troubleshooting.
 
 **Credits**
 
