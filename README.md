@@ -26,7 +26,6 @@ For any help and support, please make an issue on the Github Issue Tracker.<br/>
 
 **Credits**
 
-Credits go to:<br/>
-	**XorTroll** - for StoreWithPicture from Goldleaf<br/>
-	**Rei** - for the original deltalaunch<br/>
-	**switchbrew** - for a good documentation<br/>
+**XorTroll** - for StoreWithPicture from Goldleaf<br/>
+**Rei** - for the original deltalaunch<br/>
+**switchbrew** - for a good documentation<br/>
