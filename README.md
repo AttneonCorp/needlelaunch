@@ -5,7 +5,7 @@
 
 **Configuring:**
 
-Before building needlelaunch, you will need to configure it. Enter the project dir (the one with this README in it) and copy examples/Config.hpp to the release/ folder. Then open release/Config.hpp and uncomment the lines depending or your needs
+Before building needlelaunch, you will need to configure it. Enter the project dir (the one with this README in it) and copy examples/Config.hpp to the release/ folder. Then open release/Config.hpp and uncomment the lines depending on your needs.
 
 **Compiling:**
 
